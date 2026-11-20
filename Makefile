@@ -7,7 +7,8 @@ NAME    = sdk
 SRC    	= src/sdk.c \
 		  src/input/input.c \
 		  src/lib/array.c \
-		  src/lib/error.c
+		  src/lib/error.c \
+		  src/lib/display.c
 
 OBJ     = $(SRC:.c=.o)
 

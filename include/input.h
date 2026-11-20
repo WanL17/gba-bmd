@@ -2,26 +2,34 @@
     #define INPUT_H
 
     #define EXIT_CRITIC 84
+    #define TAB "   "
+
+typedef enum cmd_enum_s {
+    NO_CMD,
+    HEADER
+} cmd_enum_t;
+
+typedef enum options_enum_s {
+    NO_OPT,
+    DUMP,
+    GEN
+} options_enum_t;
+
+typedef enum args_enum_s {
+    NO_ARG,
+    HELP
+} args_enum_t;
 
 typedef struct error_s {
     bool er;
     char *output;
 } error_t;
 
-typedef struct input_option_s {
-    bool help;
-} input_option_t;
-
-typedef struct input_command_s {
-    bool header;
-    bool dump;
-    bool gen;
-} input_command_t;
-
 typedef struct input_s {
     error_t err;
-    input_command_t cmds;
-    input_option_t opts;
+    cmd_enum_t cmd;
+    options_enum_t opt;
+    args_enum_t arg;
     char **filenames;
     char **argv;
     int argc;
@@ -29,6 +37,6 @@ typedef struct input_s {
 
 error_t new_error(char *output);
 int parse_input(input_t *input);
-
+void display_helper(input_t *input);
 
 #endif

@@ -3,5 +3,6 @@
 
 int word_array_len(char **array);
 void free_word_array(char **array);
+void print_word_array(char **array);
 
 #endif
