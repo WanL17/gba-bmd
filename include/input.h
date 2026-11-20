@@ -15,6 +15,7 @@ typedef struct input_option_s {
 typedef struct input_command_s {
     bool header;
     bool dump;
+    bool gen;
 } input_command_t;
 
 typedef struct input_s {

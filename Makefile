@@ -2,7 +2,7 @@ CC      = gcc
 
 CFLAGS 	= -Iinclude
 
-NAME    = cartridge
+NAME    = sdk
 
 SRC    	= src/sdk.c \
 		  src/input/input.c \

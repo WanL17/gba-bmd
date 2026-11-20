@@ -11,12 +11,20 @@ int check_file(input_t *input, int index) {
     return EXIT_SUCCESS;
 }
 
-int check_options(input_t *input, int index, char const *option) {
+int check_options(input_t *input, int index) {
+    if (strcmp("--help", input->argv[index]) == 0) {
+        if (input->opts.help == true) {
+            input->err = new_error("helper input already given.");
+            return EXIT_CRITIC;
+        }
+        input->opts.help = true;
+        return EXIT_SUCCESS;
+    }
     return EXIT_FAILURE;
 }
 
-int check_command_header(input_t *input, int index, char const *command) {
-    if (strcmp(command, input->argv[index]) == 0) {
+int check_commands(input_t *input, int index) {
+    if (strcmp("header", input->argv[index]) == 0) {
         if (input->cmds.header == true) {
             input->err = new_error("header command already given.");
             return EXIT_CRITIC;
@@ -24,36 +32,42 @@ int check_command_header(input_t *input, int index, char const *command) {
         input->cmds.header = true;
         return EXIT_SUCCESS;
     }
-    return EXIT_FAILURE;
-}
-
-int check_command_dump(input_t *input, int index, char const *command) {
-    if (strcmp(command, input->argv[index]) == 0) {
-        if (input->cmds.header == true) {
+    if (strcmp("dump", input->argv[index]) == 0) {
+        if (input->cmds.dump == true) {
             input->err = new_error("dump command already given.");
             return EXIT_CRITIC;
         }
         input->cmds.dump = true;
         return EXIT_SUCCESS;
     }
+    if (strcmp("gen", input->argv[index]) == 0) {
+        if (input->cmds.gen == true) {
+            input->err = new_error("gen command already given.");
+            return EXIT_CRITIC;
+        }
+        input->cmds.gen = true;
+        return EXIT_SUCCESS;
+    }
     return EXIT_FAILURE;
 }
 
 int parse_input(input_t *input) {
-    for (int i = 1; i < input->argc; i++) {
-        int ret = 0;
-        ret = check_command_header(input, i, "header");
+    if (word_array_len(input->argv) == 1) {
+        input->err = new_error("not enough arguments.");
+        return EXIT_FAILURE;
+    }
+    int ret = 0;
+    for (int i = 1; input->argv[i]; i++) {
+        ret = check_commands(input, i);
         if (ret == EXIT_SUCCESS)
             continue;
         else if (ret == EXIT_CRITIC)
             return EXIT_FAILURE;
-        ret = check_command_header(input, i, "hdr");
+        ret = check_options(input, i);
         if (ret == EXIT_SUCCESS)
             continue;
         else if (ret == EXIT_CRITIC)
             return EXIT_FAILURE;
-        if (check_options(input, i, "--help") == EXIT_SUCCESS)
-            continue;
         if (check_file(input, i) != EXIT_SUCCESS)
             return EXIT_FAILURE;
     }

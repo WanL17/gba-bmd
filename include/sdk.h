@@ -15,6 +15,6 @@
     #include "lib.h"
     #include "rom.h"
 
-    #define PROJECT_NAME "cartridge"
+    #define PROJECT_NAME "sdk"
 
 #endif

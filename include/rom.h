@@ -30,7 +30,7 @@ typedef struct rom_s {
     char *title;
     rom_game_code_t game_code;
     rom_marker_code_t marker_code;
-    fixed_value
+    char *fixed_value;
 } rom_t;
 
 #endif
