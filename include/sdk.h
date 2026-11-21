@@ -10,11 +10,12 @@
     #include <unistd.h>
     #include <string.h>
     #include <dirent.h>
+    #include <inttypes.h>
 
     #include "input.h"
     #include "lib.h"
     #include "rom.h"
 
-    #define PROJECT_NAME "sdk"
+    #define PROGRAM_NAME "sdk"
 
 #endif

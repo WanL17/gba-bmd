@@ -31,8 +31,8 @@ typedef struct input_s {
     options_enum_t opt;
     args_enum_t arg;
     char **filenames;
+    int files_index;
     char **argv;
-    int argc;
 } input_t;
 
 error_t new_error(char *output);

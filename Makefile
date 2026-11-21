@@ -1,14 +1,19 @@
 CC      = gcc
 
-CFLAGS 	= -Iinclude
+CFLAGS 	= -Iinclude -g3
 
 NAME    = sdk
 
 SRC    	= src/sdk.c \
 		  src/input/input.c \
+		  src/header/dump/dump.c \
+		  src/header/dump/infos.c \
+		  src/header/dump/display.c \
 		  src/lib/array.c \
 		  src/lib/error.c \
-		  src/lib/display.c
+		  src/lib/display.c \
+		  src/lib/hexa.c \
+		  src/lib/string.c
 
 OBJ     = $(SRC:.c=.o)
 

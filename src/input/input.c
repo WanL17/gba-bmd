@@ -1,13 +1,27 @@
 #include "sdk.h"
 
 int check_file(input_t *input, int index) {
-    if (!strstr(".gba", input->argv[index])) return EXIT_FAILURE;
+    if (!strstr(input->argv[index], ".gba")) {
+        input->err = new_error("invalid rom file.");
+        return EXIT_FAILURE;
+    }
     struct stat infos;
-    if (stat(input->argv[index], &infos) == -1) return EXIT_FAILURE;
-    if (!S_ISREG(infos.st_mode)) return EXIT_FAILURE;
-    input->filenames = realloc(input->filenames, sizeof(char *) * word_array_len(input->filenames + 2));
-    if (!input->filenames) return EXIT_FAILURE;
-    input->filenames[word_array_len(input->filenames)] = strdup(input->argv[index]);
+    if (stat(input->argv[index], &infos) == -1) {
+        input->err = new_error("rom file not found.");
+        return EXIT_FAILURE;
+    }
+    if (!S_ISREG(infos.st_mode)) {
+        input->err = new_error("given input is not a file.");
+        return EXIT_FAILURE;
+    }
+    input->filenames = realloc(input->filenames, sizeof(char *) * (input->files_index + 2));
+    if (!input->filenames) {
+        input->err = new_error("memory error while parsing input.");
+        return EXIT_FAILURE;
+    }
+    input->filenames[input->files_index] = strdup(input->argv[index]);
+    input->files_index++;
+    input->filenames[input->files_index] = NULL;
     return EXIT_SUCCESS;
 }
 
