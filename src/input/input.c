@@ -2,7 +2,7 @@
 
 int check_file(input_t *input, int index) {
     if (!strstr(input->argv[index], ".gba")) {
-        input->err = new_error("invalid rom file.");
+        input->err = new_error("invalid input given.");
         return EXIT_FAILURE;
     }
     struct stat infos;
