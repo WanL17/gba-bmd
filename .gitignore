@@ -4,3 +4,4 @@ cartridge
 *.o
 sdk
 vgcore*
+doc.md

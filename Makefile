@@ -13,6 +13,7 @@ SRC    	= src/sdk.c \
 		  src/lib/error.c \
 		  src/lib/display.c \
 		  src/lib/hexa.c \
+		  src/lib/bits.c \
 		  src/lib/string.c
 
 OBJ     = $(SRC:.c=.o)

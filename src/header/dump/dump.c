@@ -27,8 +27,12 @@ int header_dump(char *filename)
     if (getNintendoLogo(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
     if (getGameTitle(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
     if (getGameCode(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
+    if (getMakerCode(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
     if (getFixedValue(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
+    if (getMainUnitCode(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
+    if (getDeviceType(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
     if (getReservedArea(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
+    if (getChecksum(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
     displayRomDump(&rom);
     removeRomStruct(&rom);
     return EXIT_SUCCESS;

@@ -2,11 +2,17 @@
 
 static void displayRomHeaderEntryPoint(rom_t *rom)
 {
-    write(1, "├── entry:\n", 17);
-    write(1, "│"TAB"├── code: 0x", 24);
-    for (int i = 0; i < 4; i++)
-        print_hexa(rom->entry[i], false);
-    printf("\n");
+    print("├── entry:\n");
+    print("│"TAB"├── valid: ");
+    if ((uint8_t)rom->entry.adress[0] == B_INSTRUCTION)
+        print("valid\n");
+    else
+        print("invalid\n");
+    print("│"TAB"├── raw: 0x");
+    for (int i = 3; i >= 0; i--) {
+        print_hexa(rom->entry.adress[i], false);
+    }
+    printf("\n│"TAB"└── opcode: %p\n", rom->entry.opcode);
 }
 
 static void displayRomHeaderLogo(rom_t *rom)
@@ -61,6 +67,21 @@ static void displayRomHeaderGameCode(rom_t *rom)
     }
 }
 
+static void displayRomMakerCode(rom_t *rom)
+{
+    printf("├── maker code: \n");
+    printf("│"TAB"├── id: %s\n", rom->maker_code);
+    printf("│"TAB"└── developer: ");
+    switch (rom->maker_code[0] + rom->maker_code[1]) {
+        case 97:
+            printf("Nintendo");
+            break;
+        default:
+            printf("Other");
+    }
+    printf("\n");
+}
+
 static void displayRomHeaderReservedArea(rom_t *rom) {
     bool valid = true;
     printf("├── reserved: ");
@@ -76,6 +97,13 @@ static void displayRomHeaderReservedArea(rom_t *rom) {
         printf("invalid\n");
 }
 
+static void displayChecksum(rom_t *rom) {
+    printf("└── checksum:\n");
+    printf(" "TAB"├── valid: \n");
+    printf(" "TAB"├── rom: %i\n", rom->checksum);
+    printf(" "TAB"└── our: \n");
+}
+
 void displayRomDump(rom_t *rom)
 {
     printf("%s:\n", rom->filename);
@@ -83,11 +111,16 @@ void displayRomDump(rom_t *rom)
     displayRomHeaderLogo(rom);
     printf("├── game title: %s\n", rom->title);
     displayRomHeaderGameCode(rom);
+    displayRomMakerCode(rom);
     printf("├── fixed value: ", rom->fixed_value);
     if (rom->fixed_value == FIXED_VALUE_DEFAULT)
         printf("valid ");
     else
         printf("invalid ");
-    printf("(%ih)\n", rom->fixed_value);
+    printf("(%02ih)\n", rom->fixed_value);
+    printf("├── unit code: %02i\n", rom->unit_code);
+    printf("├── device type: %02ih\n", rom->dev_type);
     displayRomHeaderReservedArea(rom);
+    printf("├── software version: %02ih\n", rom->soft_ver);
+    displayChecksum(rom);
 }

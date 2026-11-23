@@ -37,5 +37,17 @@ void display_helper(input_t *input) {
 }
 
 void print_error(error_t error) {
-    printf("%s: %s", PROGRAM_NAME, error.output);
+    printf("%s: %s\n", PROGRAM_NAME, error.output);
+}
+
+void print_mem_adress(string adress, bool big)
+{
+    for (int i = 0; i < 4; i++) {
+        print_hexa(adress[i], big);
+    }
+}
+
+int print(string str)
+{
+    return write(STDOUT_FILENO, str, strlen(str));
 }
