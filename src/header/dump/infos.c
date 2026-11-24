@@ -1,6 +1,6 @@
 #include "sdk.h"
 
-int getEntryPoint(rom_t *rom) {
+int getEntryPoint(rom_header_t *rom) {
     char buf[ENTRY_POINT_LEN];
     if (read(rom->file, buf, ENTRY_POINT_LEN) <= 0) {
         print_error(new_error("error while reading file."));
@@ -33,18 +33,32 @@ int getEntryPoint(rom_t *rom) {
     return EXIT_SUCCESS;
 }
 
-int getNintendoLogo(rom_t *rom) {
+int getNintendoLogo(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
-    if (read(rom->file, rom->logo, NINTENDO_LOGO_LEN) <= 0) {
+    if (read(rom->file, rom->logo.logo_buf, NINTENDO_LOGO_LEN) <= 0) {
         print_error(new_error("error while reading file."));
         return EXIT_FAILURE;
     }
-    rom->logo[NINTENDO_LOGO_LEN] = 0;
+    int j = 0;
+    for (int i = 0; i < NINTENDO_LOGO_LEN; i++) {
+        uint nb = rom->logo.logo_buf[i];
+        char hexa[2] = "00";
+        int reste = 0;
+        char hexa_chars[] = "0123456789ABCDEF";
+        for (int i = 1; nb > 0 && i >= 0; i--) {
+            reste = nb % 16;
+            nb /= 16;
+            hexa[i] = hexa_chars[reste];
+        }
+        rom->logo.logo_hexa[j] = hexa[0];
+        rom->logo.logo_hexa[j + 1] = hexa[1];
+        j += 2;
+    }
     rom->cursor += NINTENDO_LOGO_LEN;
     return EXIT_SUCCESS;
 }
 
-int getGameTitle(rom_t *rom) {
+int getGameTitle(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     if (read(rom->file, rom->title, GAME_TITLE_LEN) <= 0) {
         print_error(new_error("error while reading file."));
@@ -55,7 +69,7 @@ int getGameTitle(rom_t *rom) {
     return EXIT_SUCCESS;
 }
 
-int getGameCode(rom_t *rom) {
+int getGameCode(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     if (read(rom->file, rom->game_code, GAME_CODE_LEN) <= 0) {
         print_error(new_error("error while reading file."));
@@ -66,7 +80,7 @@ int getGameCode(rom_t *rom) {
     return EXIT_SUCCESS;
 }
 
-int getMakerCode(rom_t *rom) {
+int getMakerCode(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     if (read(rom->file, rom->maker_code, MAKER_CODE_LEN) <= 0) {
         print_error(new_error("error while reading file."));
@@ -77,7 +91,7 @@ int getMakerCode(rom_t *rom) {
     return EXIT_SUCCESS;
 }
 
-int getFixedValue(rom_t *rom) {
+int getFixedValue(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     char c = 0;
     if (read(rom->file, &c, 1) <= 0) {
@@ -89,7 +103,7 @@ int getFixedValue(rom_t *rom) {
     return EXIT_SUCCESS;
 }
 
-int getMainUnitCode(rom_t *rom) {
+int getMainUnitCode(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     char c = 0;
     if (read(rom->file, &c, MAIN_UNIT_CODE_LEN) <= 0) {
@@ -101,7 +115,7 @@ int getMainUnitCode(rom_t *rom) {
     return EXIT_SUCCESS;
 }
 
-int getDeviceType(rom_t *rom) {
+int getDeviceType(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     char c = 0;
     if (read(rom->file, &c, DEVICE_TYPE_LEN) <= 0) {
@@ -113,18 +127,22 @@ int getDeviceType(rom_t *rom) {
     return EXIT_SUCCESS;
 }
 
-int getReservedArea(rom_t *rom) {
+int getReservedArea(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     if (read(rom->file, rom->reserved, RESERVED_AREA_LEN) <= 0) {
         print_error(new_error("error while reading file."));
         return EXIT_FAILURE;
     }
-    rom->reserved[RESERVED_AREA_LEN] = 0;
+    lseek(rom->file, 194, SEEK_SET);
+    if (read(rom->file, &rom->reserved[RESERVED_AREA_LEN], SECOND_RESERVED_AREA_LEN) <= 0) {
+        print_error(new_error("error while reading file."));
+        return EXIT_FAILURE;
+    }
     rom->cursor += RESERVED_AREA_LEN;
     return EXIT_SUCCESS;
 }
 
-int getSoftwareVersion(rom_t *rom) {
+int getSoftwareVersion(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     char c = 0;
     if (read(rom->file, &c, SOFTWARE_VERSION_LEN) <= 0) {
@@ -136,21 +154,20 @@ int getSoftwareVersion(rom_t *rom) {
     return EXIT_SUCCESS;
 }
 
-int getChecksum(rom_t *rom) {
+int getChecksum(rom_header_t *rom) {
     lseek(rom->file, rom->cursor, SEEK_SET);
     char c = 0;
     if (read(rom->file, &c, CHECKSUM_LEN) <= 0) {
         print_error(new_error("error while reading file"));
         return EXIT_FAILURE;
     }
-    rom->checksum = getHexadecimalNumber(c);
     lseek(rom->file, OAOH, SEEK_SET);
-    char buf[29 + 1];
-    if (read(rom->file, buf, 29) <= 0) {
+    char buf[30];
+    if (read(rom->file, buf, 30) <= 0) {
         print_error(new_error("error while reading file"));
         return EXIT_FAILURE;
     }
-    for (int i = 0; i < 29; i++) {
+    for (int i = 0; i < 30; i++) {
         rom->checksum -= buf[i];
     }
     return EXIT_SUCCESS;

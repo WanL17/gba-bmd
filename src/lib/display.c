@@ -1,18 +1,21 @@
 #include "sdk.h"
 
-static void display_helper_cmd(input_t *input) {
-    switch (input->opt) {
-        case GEN :
-            printf("Usage: cartridge hdr dump [OPTIONS] [GBA_FILES]...\n\n"
+static void display_helper_header(input_t *input) {
+    switch (input->option) {
+        case DUMP :
+            printf("Usage: %s hdr dump [OPTIONS] [GBA_FILES]...\n\n"
                 TAB"header generation\n\n"
                 "Options:\n"
-                TAB"--help"TAB"Show this message and exit.\n\n");
+                TAB"--help"TAB"Show this message and exit.\n\n", PROGRAM_NAME);
             break;
-        case DUMP :
-            printf("Usage: cartridge hdr dump [OPTIONS] [GBA_FILES]...\n\n"
-                TAB"dump / display cartridge header information\n\n"
+        case GEN :
+            printf("Usage: %s hdr gen [OPTIONS]\n\n"
+                TAB"header generation\n\n"
                 "Options:\n"
-                TAB"-b"TAB"--binary FILE"TAB"input binary file [required]\n");
+                TAB"-b"TAB"--binary FILE"TAB"input binary file [required]\n"
+                TAB"-o"TAB"--output TEXT"TAB"output filename [required]\n"
+                TAB"-n"TAB"--name TEXT"TAB "  internal cartridge name (default: filename)\n"
+                TAB"--help"TAB TAB TAB TAB TAB"Show this message and exit.\n\n", PROGRAM_NAME);
             break;
         default :
             break;
@@ -23,31 +26,25 @@ static void display_helper_cmd(input_t *input) {
 void display_helper(input_t *input) {
     switch (input->cmd) {
         case HEADER :
-            display_helper_cmd(input);
+            display_helper_header(input);
             return;
         default :
             break;
     }
-    printf("Usage: cartridge [OPTIONS] COMMAND [ARGS]...\n\n"
-        TAB"Cartridge SDK CLI entry\n\n"
+    printf("Usage: %s [OPTIONS] COMMAND [ARGS]...\n\n"
+        TAB"%s CLI entry\n\n"
         "Options:\n"
         TAB"--help"TAB"Show this message and exit.\n\n"
         "Commands:\n"
-        TAB"header"TAB"Cartridge header interface\n");
+        TAB"header"TAB"%s header interface\n", PROGRAM_NAME, PROGRAM_NAME, PROGRAM_NAME);
 }
 
-void print_error(error_t error) {
-    printf("%s: %s\n", PROGRAM_NAME, error.output);
-}
-
-void print_mem_adress(string adress, bool big)
-{
+void print_mem_adress(string adress, bool big) {
     for (int i = 0; i < 4; i++) {
         print_hexa(adress[i], big);
     }
 }
 
-int print(string str)
-{
+int print(string str) {
     return write(STDOUT_FILENO, str, strlen(str));
 }

@@ -6,9 +6,12 @@ NAME    = sdk
 
 SRC    	= src/sdk.c \
 		  src/input/input.c \
+		  src/input/error.c \
 		  src/header/dump/dump.c \
 		  src/header/dump/infos.c \
 		  src/header/dump/display.c \
+		  src/header/generator/gen.c \
+		  src/header/generator/file.c \
 		  src/lib/array.c \
 		  src/lib/error.c \
 		  src/lib/display.c \

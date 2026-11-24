@@ -12,8 +12,8 @@
     #include <dirent.h>
     #include <inttypes.h>
 
-    #include "input.h"
     #include "lib.h"
+    #include "input.h"
     #include "rom.h"
 
     #define PROGRAM_NAME "sdk"

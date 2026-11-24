@@ -1,13 +1,8 @@
 #include "sdk.h"
 
-void removeRomStruct(rom_t *rom) {
-    if (rom->filename) free(rom->filename);
-    close(rom->file);
-}
-
-int header_dump(char *filename)
+int header_dump(string filename)
 {
-    rom_t rom = {0};
+    rom_header_t rom = {0};
     rom.filename = strdup(filename);
     if (!rom.filename) {
         print_error(new_error("memory error while parsing file."));
@@ -33,7 +28,8 @@ int header_dump(char *filename)
     if (getDeviceType(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
     if (getReservedArea(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
     if (getChecksum(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
-    displayRomDump(&rom);
-    removeRomStruct(&rom);
+    displayRomHeaderDump(&rom);
+    if (rom.filename) free(rom.filename);
+    close(fd);
     return EXIT_SUCCESS;
 }
