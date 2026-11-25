@@ -7,11 +7,11 @@ int input_error_handling(input_t *input)
         return EXIT_FAILURE;
     }
     if (input->cmd == HEADER) {
-        if (input->option == DUMP && !input->filenames) {
+        if (input->option == DUMP && !input->filenames && input->args.type != HELP) {
             input->err = new_error("no gba rom files given.");
             return EXIT_FAILURE;
         }
-        if (input->option == GEN && (!input->args.gen_args[HEADER_GEN_BINARY] || !input->args.gen_args[HEADER_GEN_OUTPUT])) {
+        if (input->option == GEN && input->args.type != HELP && (!input->args.gen_args[HEADER_GEN_BINARY] || !input->args.gen_args[HEADER_GEN_OUTPUT])) {
             input->err = new_error("missing output or binary.");
             return EXIT_FAILURE;
         }
