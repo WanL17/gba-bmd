@@ -15,7 +15,7 @@ static void write_nintendo_logo(int fd) {
 
 static void write_game_title(int fd, string game_title, uint *checksum) {
     int i = 0;
-    for (; i < strlen(game_title); i++) {
+    for (; i < strlen(game_title) && i < GAME_TITLE_LEN; i++) {
         game_title[i] = lowercase_to_uppercase(game_title[i]);
         write(fd, &game_title[i], 1);
         (*checksum) -= game_title[i];

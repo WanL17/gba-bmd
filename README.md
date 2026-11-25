@@ -12,7 +12,6 @@ This command is used to check the informations about a rom header anfd check if 
 Here is the result used on a Pokemon Emerald ROM :
 
 ```sh
-
 $ ./sdk header dump pkm_emerald.gba
 
 roms/pkm_emerald.gba:

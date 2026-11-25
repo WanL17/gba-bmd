@@ -6,7 +6,9 @@
 
 typedef enum cmd_enum_s {
     NO_CMD,
-    HEADER
+    HEADER,
+    BUILD,
+    EMU
 } cmd_enum_t;
 
 typedef enum options_enum_s {

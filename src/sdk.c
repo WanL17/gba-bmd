@@ -1,7 +1,6 @@
 #include "sdk.h"
 
-
-int sdk_header(input_t *input)
+static int sdk_header(input_t *input)
 {
     switch (input->option) {
         case DUMP :
@@ -20,6 +19,16 @@ int sdk_header(input_t *input)
     return EXIT_FAILURE;
 }
 
+static int sdk_build(input_t *input) {
+    printf("build\n");
+    return EXIT_SUCCESS;
+}
+
+static int sdk_emulator(input_t *input) {
+    printf("emulator\n");
+    return EXIT_SUCCESS;
+}
+
 int sdk(input_t *input)
 {
     int ret = EXIT_FAILURE;
@@ -32,11 +41,18 @@ int sdk(input_t *input)
         case HEADER :
             ret = sdk_header(input);
             break;
+        case BUILD :
+            ret = sdk_build(input);
+            break;
+        case EMU :
+            ret = sdk_emulator(input);
+            break;
         default :
             break;
     }
     for (int i = 0; i < 3; i++) {
-        if (input->args.gen_args[i]) free(input->args.gen_args[i]);
+        if (input->args.gen_args[i])
+            free(input->args.gen_args[i]);
     }
     free_word_array(input->filenames);
     return ret;
