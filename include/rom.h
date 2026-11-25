@@ -35,6 +35,7 @@ typedef struct rom_header_logo_s {
 
 typedef struct rom_header_s {
     string filename;
+    string file_path;
     struct stat file_infos;
     uint file;
     rom_header_entry_t entry;

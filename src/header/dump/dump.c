@@ -3,20 +3,32 @@
 int header_dump(string filename)
 {
     rom_header_t rom = {0};
-    rom.filename = strdup(filename);
+    rom.file_path = strdup(filename);
+    char **array = str_to_array(filename, '/');
+    if (!array || !rom.file_path) {
+        print_error(new_error("error while getting filename."));
+        return EXIT_FAILURE;
+    }
+    rom.filename = strdup(array[word_array_len(array) - 1]);
+    free_word_array(array);
     if (!rom.filename) {
         print_error(new_error("memory error while parsing file."));
         return EXIT_FAILURE;
     }
-    int fd = open(rom.filename, O_RDONLY);
+    int fd = open(rom.file_path, O_RDONLY);
     if (fd == FAIL) {
         print_error(new_error("error while opening file."));
         return EXIT_FAILURE;
     }
     rom.file = fd;
-    if (stat(rom.filename, &rom.file_infos) == FAIL) {
+    if (stat(rom.file_path, &rom.file_infos) == FAIL) {
         close(fd);
-        print_error(new_error("error while opening file."));
+        print_error(new_error("error while stating file."));
+        return EXIT_FAILURE;
+    }
+    if (!S_ISREG(rom.file_infos.st_mode)) {
+        close(fd);
+        print_error(new_error("given rom is not a file."));
         return EXIT_FAILURE;
     }
     if (getEntryPoint(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
@@ -31,6 +43,7 @@ int header_dump(string filename)
     if (getChecksum(&rom) == EXIT_FAILURE) return EXIT_FAILURE;
     displayRomHeaderDump(&rom);
     if (rom.filename) free(rom.filename);
+    if (rom.file_path) free(rom.file_path);
     close(fd);
     return EXIT_SUCCESS;
 }

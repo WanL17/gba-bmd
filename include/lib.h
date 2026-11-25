@@ -26,5 +26,6 @@ void extract_bits(uint nb, unsigned int *bits);
 unsigned int bits_to_byte(unsigned int *bits);
 int print(string str);
 char lowercase_to_uppercase(char c);
+char **str_to_array(char *str, char separator);
 
 #endif
