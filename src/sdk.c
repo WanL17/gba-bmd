@@ -35,6 +35,9 @@ int sdk(input_t *input)
         default :
             break;
     }
+    for (int i = 0; i < 3; i++) {
+        if (input->args.gen_args[i]) free(input->args.gen_args[i]);
+    }
     free_word_array(input->filenames);
     return ret;
 }

@@ -6,7 +6,7 @@ int check_file(input_t *input) {
         return EXIT_FAILURE;
     }
     struct stat infos;
-    if (stat(input->argv[input->index], &infos) == -1) {
+    if (stat(input->argv[input->index], &infos) == FAIL) {
         input->err = new_error("rom file not found.");
         return EXIT_FAILURE;
     }

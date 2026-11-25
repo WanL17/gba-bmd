@@ -9,12 +9,13 @@ int header_dump(string filename)
         return EXIT_FAILURE;
     }
     int fd = open(rom.filename, O_RDONLY);
-    if (fd == -1) {
+    if (fd == FAIL) {
         print_error(new_error("error while opening file."));
         return EXIT_FAILURE;
     }
     rom.file = fd;
-    if (stat(rom.filename, &rom.file_infos) == -1) {
+    if (stat(rom.filename, &rom.file_infos) == FAIL) {
+        close(fd);
         print_error(new_error("error while opening file."));
         return EXIT_FAILURE;
     }

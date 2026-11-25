@@ -1,11 +1,7 @@
 #include "sdk.h"
 
-/*char const *concat(char **array) {
-    if (!array) return NULL;
-    char str[] = "";
-    for (int i = 0; array[i]; i++) {
-        if (!strcat(str, array[i]))
-            return NULL;
-    }
-    return str;
-}*/
+char lowercase_to_uppercase(char c) {
+    if (c >= 'a' && c <= 'z')
+        c -= 32;
+    return c;
+}

@@ -22,7 +22,11 @@ static void displayRomHeaderLogo(rom_header_t *rom)
         printf(GREEN_COLOR"valid\n"WHITE_COLOR);
     else
         printf(RED_COLOR"invalid\n"WHITE_COLOR);
-    printf("│"TAB"└── debugging: \n");
+    printf("│"TAB"└── debugging: ");
+    if (rom->logo.debug == 1)
+        printf(GREEN_COLOR"enabled\n"WHITE_COLOR);
+    else
+        printf(RED_COLOR"disabled\n"WHITE_COLOR);
 }
 
 static void displayRomHeaderGameCode(rom_header_t *rom)
@@ -102,9 +106,13 @@ static void displayRomHeaderReservedArea(rom_header_t *rom) {
 
 static void displayChecksum(rom_header_t *rom) {
     printf("└── checksum:\n");
-    printf(" "TAB"├── valid: \n");
-    printf(" "TAB"├── rom: %u\n", rom->checksum);
-    printf(" "TAB"└── our: \n");
+    printf(" "TAB"├── valid: ");
+    if (rom->checksum[CHECKSUM_OUR_INDEX] == rom->checksum[CHECKSUM_ROM_INDEX])
+        printf(GREEN_COLOR"valid\n"WHITE_COLOR);
+    else
+        printf(RED_COLOR"invalid\n"WHITE_COLOR);
+    printf(" "TAB"├── rom: %x\n", rom->checksum[CHECKSUM_ROM_INDEX]);
+    printf(" "TAB"└── our: %x\n", rom->checksum[CHECKSUM_OUR_INDEX]);
 }
 
 void displayRomHeaderDump(rom_header_t *rom)
@@ -121,7 +129,7 @@ void displayRomHeaderDump(rom_header_t *rom)
         printf(GREEN_COLOR"valid "WHITE_COLOR);
     else
         printf(RED_COLOR"invalid "WHITE_COLOR);
-    printf("(%02ih)\n", rom->fixed_value);
+    printf("(%xh)\n", rom->fixed_value);
     printf("├── unit code: %02i\n", rom->unit_code);
     printf("├── device type: %02ih\n", rom->dev_type);
     displayRomHeaderReservedArea(rom);
